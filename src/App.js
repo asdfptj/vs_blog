@@ -28,6 +28,7 @@ function App() {
         type: "directory",
         title: "일상",
       },
+
       {
         type: "directory",
         title: "Tech",
@@ -35,10 +36,27 @@ function App() {
           {
             type: "post",
             title: "Tech1",
+            path: "/Tech/Tech1",
           },
           {
             type: "post",
             title: "Tech2",
+            path: "/Tech/Tech2",
+          },
+          {
+            type: "post",
+            title: "Tech3",
+            path: "/Tech/Tech3",
+          },
+          {
+            type: "post",
+            title: "Tech4",
+            path: "/Tech/Tech4",
+          },
+          {
+            type: "post",
+            title: "Tech5",
+            path: "/Tech/Tech5",
           },
           {
             type: "directory",
@@ -46,11 +64,28 @@ function App() {
             children: [
               {
                 type: "post",
-                title: "Tech3",
+                title: "Tech31",
+                path: "/Tech/Tech3/Tech31",
               },
               {
                 type: "post",
-                title: "Tech4",
+                title: "Tech32",
+                path: "/Tech/Tech3/Tech32",
+              },
+              {
+                type: "post",
+                title: "Tech33",
+                path: "/Tech/Tech3/Tech33",
+              },
+              {
+                type: "post",
+                title: "Tech34",
+                path: "/Tech/Tech3/Tech34",
+              },
+              {
+                type: "post",
+                title: "Tech35",
+                path: "/Tech/Tech3/Tech35",
               },
             ],
           },
