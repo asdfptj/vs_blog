@@ -143,7 +143,7 @@ const RightHeader = styled.div`
   height: 50px;
   display: flex;
   overflow-x: scroll;
-  background-color: #252526;
+  background-color: ${({ theme }) => theme.color.secondary};
 
   ::-webkit-scrollbar-thumb {
     display: none;
@@ -157,13 +157,13 @@ const RightHeader = styled.div`
     width: 150px;
     min-width: 150px;
     padding: 10px;
-    background-color: #252526;
+    background-color: ${({ theme }) => theme.color.secondary};
     user-select: none;
     position: relative;
     cursor: pointer;
 
     &.selected {
-      background-color: #1e1e1e;
+      background-color: ${({ theme }) => theme.color.primary};
     }
 
     &:not(.selected) > span {
@@ -185,10 +185,12 @@ const IconWrap = styled.div`
   justify-content: center;
   padding: 10px 0;
   cursor: pointer;
-  border-left: ${({ selected }) => (selected ? 2 : 0)}px solid white;
+  border-left: ${({ theme, selected }) =>
+    `${selected ? 2 : 0}px solid ${theme.color.text}`};
 
   > svg {
-    color: ${({ selected }) => (selected ? "white" : "#7a7a7a")};
+    color: ${({ theme, selected }) =>
+      `${selected ? "#FFF" : theme.color.text}`};
   }
 `;
 const Wrap = styled.div`
@@ -199,14 +201,14 @@ const Wrap = styled.div`
 const LeftBar = styled.div`
   width: 50px;
   height: 100%;
-  background-color: #333333;
+  background-color: ${({ theme }) => theme.color.third};
   min-width: 50px;
 `;
 const LeftContent = styled.div`
   width: 320px;
   min-width: 320px;
   height: 100%;
-  background-color: #252526;
+  background-color: ${({ theme }) => theme.color.secondary};
   padding: 10px;
 
   > p {
@@ -219,7 +221,7 @@ const LeftContent = styled.div`
   }
 `;
 const RightContent = styled.div`
-  background-color: #1e1e1e;
+  background-color: ${({ theme }) => theme.color.primary};
   width: 100%;
   height: calc(100% - 50px);
 
@@ -230,10 +232,10 @@ const RightContent = styled.div`
     > div {
       width: 150px;
       padding: 10px;
-      background-color: #252526;
+      background-color: ${({ theme }) => theme.color.secondary};
 
       &.selected {
-        background-color: #1e1e1e;
+        background-color: ${({ theme }) => theme.color.primary};
       }
     }
   }

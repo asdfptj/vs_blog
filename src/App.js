@@ -7,6 +7,9 @@ import {
 import Main from "./pages/Main";
 import ThemeContext from "./context/AppContext";
 import { useEffect, useState } from "react";
+import { ThemeProvider } from "styled-components";
+import { darkTheme } from "./style/theme";
+import { GlobalStyle } from "./style/GlobalStyle";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -106,7 +109,10 @@ function App() {
         postData,
       }}
     >
-      <RouterProvider router={router} />
+      <ThemeProvider theme={darkTheme}>
+        <GlobalStyle />
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </ThemeContext.Provider>
   );
 }

@@ -37,10 +37,10 @@ const PostWrap = styled.div`
   cursor: pointer;
 
   &:not(.selected):hover {
-    background-color: #3c3c3c;
+    background-color: ${({ theme }) => theme.color.hover};
   }
 
   &.selected {
-    background-color: #505050;
+    background-color: ${({ theme }) => theme.color.selected};
   }
 `;
