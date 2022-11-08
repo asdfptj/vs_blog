@@ -1,9 +1,9 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import AppContext from "../context/AppContext";
-import Accordion from "./Accordion";
+import { VscClose } from "react-icons/vsc";
 
-function Content({ type, title, children, path }) {
+function PostWrap({ path, title, isClose }) {
   const { selectedPost, setSelectedPost, openPost, setOpenPost } =
     useContext(AppContext);
 
@@ -15,24 +15,23 @@ function Content({ type, title, children, path }) {
     }
   }
 
-  return type === "directory" ? (
-    <Accordion title={`📂${title}`}>
-      {children?.map((one, index) => (
-        <Content {...one} key={index} />
-      ))}
-    </Accordion>
-  ) : (
-    <PostWrap
+  return (
+    <PostWrapStyled
       onClick={selectedFunction}
       className={selectedPost === path ? "selected" : ""}
     >
-      &nbsp;&nbsp;&nbsp;&nbsp;📝{title}
-    </PostWrap>
+      &nbsp;&nbsp;
+      <span className={isClose && selectedPost === path ? "visible" : ""}>
+        <VscClose />
+      </span>
+      &nbsp;&nbsp;📝{title}
+    </PostWrapStyled>
   );
 }
-export default Content;
 
-const PostWrap = styled.div`
+export default PostWrap;
+
+const PostWrapStyled = styled.div`
   margin: 5px 0;
   cursor: pointer;
 
@@ -42,5 +41,13 @@ const PostWrap = styled.div`
 
   &.selected {
     background-color: #505050;
+  }
+
+  > span {
+    display: none;
+
+    &.visible {
+      display: block;
+    }
   }
 `;

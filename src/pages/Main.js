@@ -11,6 +11,8 @@ import {
 } from "react-icons/vsc";
 import Content from "../components/Contents";
 import AppContext from "../context/AppContext";
+import { getPostOne } from "../common/common.function";
+import PostWrap from "../components/PostWrap";
 
 function Main() {
   const [selected, setSelected] = useState(null);
@@ -23,10 +25,20 @@ function Main() {
       path: "EXPLORER",
       content: (
         <>
-          <Accordion title="OPEN POSTS" isBold={true}>
-            내요요요옹
+          <Accordion title="OPEN POSTS" isBold={true} initialExpanded={true}>
+            {openPost.map((one, index) => {
+              const data = getPostOne(postData, one);
+              return (
+                <PostWrap
+                  path={data.path}
+                  title={data.title}
+                  isClose={true}
+                  key={index}
+                />
+              );
+            })}
           </Accordion>
-          <Accordion title="VSCODE" isBold={true}>
+          <Accordion title="VSCODE" isBold={true} initialExpanded={true}>
             {postData.map((one, index) => (
               <Content {...one} key={index} />
             ))}
@@ -77,18 +89,7 @@ function Main() {
       <RightWrap selected={selected}>
         <RightHeader>
           {openPost.map((one, index) => {
-            const pathArr = one.split("/").filter(Boolean);
-
-            const data = pathArr.reduce((sum, current, index) => {
-              const lastPath = pathArr.length - 1 === index;
-
-              const target = sum.find(
-                (one) =>
-                  one.title === current &&
-                  one.type === (lastPath ? "post" : "directory")
-              );
-              return lastPath ? target : target?.children;
-            }, postData);
+            const data = getPostOne(postData, one);
 
             return (
               <div
@@ -144,6 +145,14 @@ const RightHeader = styled.div`
   overflow-x: scroll;
   background-color: #252526;
 
+  ::-webkit-scrollbar-thumb {
+    display: none;
+  }
+
+  &:hover::-webkit-scrollbar-thumb {
+    display: block;
+  }
+
   > div {
     width: 150px;
     min-width: 150px;
@@ -157,6 +166,13 @@ const RightHeader = styled.div`
       background-color: #1e1e1e;
     }
 
+    &:not(.selected) > span {
+      display: none;
+    }
+
+    &:hover > span {
+      display: block;
+    }
     > span {
       position: absolute;
       right: 15px;
