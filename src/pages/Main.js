@@ -13,11 +13,20 @@ import Content from "../components/Contents";
 import AppContext from "../context/AppContext";
 import { getPostOne } from "../common/common.function";
 import PostWrap from "../components/PostWrap";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 function Main() {
   const [selected, setSelected] = useState(null);
-  const { setSelectedPost, selectedPost, postData, setOpenPost, openPost } =
-    useContext(AppContext);
+  const {
+    setTheme,
+    theme,
+    setSelectedPost,
+    selectedPost,
+    postData,
+    setOpenPost,
+    openPost,
+  } = useContext(AppContext);
 
   const listArr = [
     {
@@ -67,18 +76,27 @@ function Main() {
   return (
     <Wrap>
       <LeftBar>
-        {listArr.map((one, index) => (
-          <IconWrap
-            selected={selected === index}
+        <div>
+          {listArr.map((one, index) => (
+            <IconWrap
+              selected={selected === index}
+              onClick={() => setSelected(selected === index ? null : index)}
+              key={index}
+            >
+              {one.icon}
+            </IconWrap>
+          ))}
+        </div>
+        <div>
+          <div
+            className={theme}
             onClick={() => {
-              setSelected(selected === index ? null : index);
+              setTheme(theme === "dark" ? "light" : "dark");
             }}
-            key={index}
-          >
-            {one.icon}
-          </IconWrap>
-        ))}
+          ></div>
+        </div>
       </LeftBar>
+
       {selected !== null && listArr[selected] && (
         <LeftContent>
           <p>{listArr[selected]?.path}</p>
@@ -87,7 +105,7 @@ function Main() {
       )}
 
       <RightWrap selected={selected}>
-        <RightHeader>
+        <RightHeader visible={openPost.length !== 0 ? true : false}>
           {openPost.map((one, index) => {
             const data = getPostOne(postData, one);
 
@@ -121,7 +139,40 @@ function Main() {
           })}
         </RightHeader>
 
-        <RightContent selected={selected}>{selectedPost}</RightContent>
+        <RightContent
+          selected={selected}
+          visible={openPost.length !== 0 ? true : false}
+        >
+          {(() => {
+            const data = getPostOne(postData, selectedPost);
+
+            return (
+              data && (
+                <>
+                  <p>{data.path}</p>
+                  <div>
+                    <h1>{data?.title}</h1>
+                    <p>
+                      <strong>taejun | </strong>
+                      {data.data?.date}
+                    </p>
+                    <div>
+                      {data?.data?.tag?.map((one, index) => (
+                        <span key={index}>{one}</span>
+                      ))}
+                    </div>
+                    <div>
+                      <ReactMarkdown
+                        children={data.data?.content}
+                        remarkPlugins={[remarkGfm]}
+                      />
+                    </div>
+                  </div>
+                </>
+              )
+            );
+          })()}
+        </RightContent>
       </RightWrap>
     </Wrap>
   );
@@ -141,7 +192,7 @@ const RightWrap = styled.div`
 const RightHeader = styled.div`
   width: 100%;
   height: 50px;
-  display: flex;
+  display: ${({ visible }) => (visible ? "flex" : "none")};
   overflow-x: scroll;
   background-color: ${({ theme }) => theme.color.secondary};
 
@@ -190,7 +241,7 @@ const IconWrap = styled.div`
 
   > svg {
     color: ${({ theme, selected }) =>
-      `${selected ? "#FFF" : theme.color.text}`};
+      `${selected ? "white" : theme.color.text}`};
   }
 `;
 const Wrap = styled.div`
@@ -199,10 +250,39 @@ const Wrap = styled.div`
   background-color: white;
 `;
 const LeftBar = styled.div`
-  width: 50px;
   height: 100%;
-  background-color: ${({ theme }) => theme.color.third};
+  width: 50px;
   min-width: 50px;
+  background-color: ${({ theme }) => theme.color.third};
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  > div:last-child {
+    padding-bottom: 30px;
+    > div {
+      height: 50px;
+      width: 30px;
+      //border: 1px solid ${({ theme }) => theme.color.text};
+      background: ${({ theme }) => theme.color.primary};
+      border-radius: 50px;
+      position: relative;
+      left: 10px;
+      &::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2.5px;
+        width: 25px;
+        height: 25px;
+        border-radius: 20px;
+        background-color: ${({ theme }) => theme.color.text};
+        transition: 0.3s;
+      }
+      &.light::after {
+        top: 24px;
+      }
+    }
+  }
 `;
 const LeftContent = styled.div`
   width: 320px;
@@ -223,20 +303,42 @@ const LeftContent = styled.div`
 const RightContent = styled.div`
   background-color: ${({ theme }) => theme.color.primary};
   width: 100%;
-  height: calc(100% - 50px);
+  height: ${({ visible }) => (visible ? "calc(100% - 50px)" : "100%")};
+  padding: 10px 20px;
 
-  > div:first-child {
-    display: flex;
-    overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-    > div {
-      width: 150px;
-      padding: 10px;
-      background-color: ${({ theme }) => theme.color.secondary};
+  > p {
+    width: 100%;
+    color: #7a7a7a;
+  }
 
-      &.selected {
-        background-color: ${({ theme }) => theme.color.primary};
+  > div {
+    width: 100%;
+    max-width: 600px;
+    > h1 {
+      padding: 10px 0 20px 0;
+    }
+
+    > p {
+      padding-bottom: 10px;
+      color: #7a7a7a;
+    }
+
+    > div:nth-child(3) {
+      padding: 10px 0px 20px 0;
+      > span {
+        padding: 5px 10px;
+        margin-right: 10px;
+        border-radius: 10px;
+        background-color: ${({ theme }) => theme.color.selected};
       }
+    }
+
+    &.selected {
+      background-color: ${({ theme }) => theme.color.primary};
     }
   }
 `;
