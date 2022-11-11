@@ -10,7 +10,8 @@ export const GlobalStyle = createGlobalStyle`
     color: ${({ theme }) => theme.color.text};
   }
   *::-webkit-scrollbar {
-    height: 8px;
+    height: 7px;
+    width: 7px;
   }
   
   *::-webkit-scrollbar-thumb {

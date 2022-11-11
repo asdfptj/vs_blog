@@ -15,6 +15,9 @@ import { getPostOne } from "../common/common.function";
 import PostWrap from "../components/PostWrap";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import Search from "./Search";
 
 function Main() {
   const [selected, setSelected] = useState(null);
@@ -58,6 +61,7 @@ function Main() {
     {
       icon: <VscSearch size={22.4} />,
       path: "SEARCH",
+      content: <Search />,
     },
     {
       icon: <VscSourceControl size={22.4} />,
@@ -161,11 +165,37 @@ function Main() {
                         <span key={index}>{one}</span>
                       ))}
                     </div>
-                    <div>
+                    <div className="markdown">
                       <ReactMarkdown
                         children={data.data?.content}
                         remarkPlugins={[remarkGfm]}
-                      />
+                        components={{
+                          code({
+                            node,
+                            inline,
+                            className,
+                            children,
+                            ...props
+                          }) {
+                            const match = /language-(\w+)/.exec(
+                              className || ""
+                            );
+                            return !inline && match ? (
+                              <SyntaxHighlighter
+                                children={String(children).replace(/\n$/, "")}
+                                style={dark}
+                                language={match[1]}
+                                PreTag="div"
+                                {...props}
+                              />
+                            ) : (
+                              <code className={className} {...props}>
+                                {children}
+                              </code>
+                            );
+                          },
+                        }}
+                      ></ReactMarkdown>
                     </div>
                   </div>
                 </>
@@ -309,6 +339,7 @@ const RightContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-y: scroll;
 
   > p {
     width: 100%;
@@ -334,6 +365,13 @@ const RightContent = styled.div`
         margin-right: 10px;
         border-radius: 10px;
         background-color: ${({ theme }) => theme.color.selected};
+      }
+    }
+
+    > div:last-child.markdown {
+      h1 {
+        color: pink;
+        padding: 10px 0 30px 0;
       }
     }
 
