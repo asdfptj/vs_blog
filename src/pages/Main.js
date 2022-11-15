@@ -30,6 +30,7 @@ function Main() {
     setOpenPost,
     openPost,
     selectedTag,
+    setSelectedTag,
   } = useContext(AppContext);
 
   const listArr = [
@@ -113,16 +114,42 @@ function Main() {
       <RightWrap selected={selected}>
         {selectedTag ? (
           <RightTagContent>
-            <h2>
-              {selectedTag.tagTitle} 관련 글 목록{" "}
-              <span>{selectedTag.path.length}개</span>
-            </h2>
             <div>
-              {selectedTag.path.map((path) => {
-                const tagData = getPostOne(postData, path);
+              <h2>
+                {selectedTag.tagTitle} 관련 글 목록{" "}
+                <span>{selectedTag.path.length}개</span>
+              </h2>
+              <div>
+                {selectedTag.path.map((path) => {
+                  const tagData = getPostOne(postData, path);
 
-                return <div>{tagData.title}</div>;
-              })}
+                  return (
+                    <div
+                      className="post"
+                      onClick={() => {
+                        setSelectedPost(tagData.path);
+                        setSelectedTag(null);
+
+                        if (!openPost.includes(path)) {
+                          setOpenPost([...openPost, path]);
+                        }
+                      }}
+                    >
+                      <div>
+                        <div>
+                          <img src={tagData.data.thumbnail} alt=""></img>
+                        </div>
+                        <h3>{tagData.title}</h3>
+                      </div>
+                      <div>
+                        {tagData.data.tag.map((one) => (
+                          <span>{one}</span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </RightTagContent>
         ) : (
@@ -286,6 +313,63 @@ const RightTagContent = styled.div`
   align-items: center;
 
   overflow-y: scroll;
+  > div {
+    width: 100%;
+    max-width: 600px;
+
+    > h2 {
+      border-bottom: 1px solid #505050;
+      padding: 20px 0;
+      > span {
+        font-size: 1.2rem;
+        color: ${({ theme }) => theme.color.selected};
+      }
+    }
+    > div {
+      > div.post {
+        padding: 10px;
+        margin-top: 20px;
+        border-radius: 10px;
+        background: ${({ theme }) => theme.color.secondary};
+        cursor: pointer;
+
+        &:hover {
+          background: ${({ theme }) => theme.color.third};
+          transform: scale(1.05);
+          transition: 0.2s;
+        }
+
+        > div:first-child {
+          display: flex;
+          > div {
+            width: 80px;
+            height: 80px;
+            background-color: red;
+            border-radius: 10px;
+            overflow: hidden;
+            > img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+          > h3 {
+            padding-left: 10px;
+          }
+        }
+        > div:last-child {
+          padding-top: 10px;
+          > span {
+            display: inline;
+            padding: 5px 10px;
+            border-radius: 10px;
+            margin-right: 10px;
+            background-color: ${({ theme }) => theme.color.selected};
+          }
+        }
+      }
+    }
+  }
 `;
 
 const IconWrap = styled.div`

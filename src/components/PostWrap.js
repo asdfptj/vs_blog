@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import AppContext from "../context/AppContext";
-import { VscClose } from "react-icons/vsc";
+import { VscChromeClose } from "react-icons/vsc";
 
-function PostWrap({ path, title, isClose }) {
+export default function PostWrap({ path, title, isClose }) {
   const { selectedPost, setSelectedPost, openPost, setOpenPost } =
     useContext(AppContext);
 
@@ -22,51 +22,49 @@ function PostWrap({ path, title, isClose }) {
     >
       <span
         className={isClose && selectedPost === path ? "visible" : ""}
+        isClose={isClose}
         onClick={(e) => {
           e.stopPropagation();
-
           const openPostFilter = openPost.filter((one) => one !== path);
           setOpenPost(openPostFilter);
-
           setSelectedPost(
             openPostFilter.length !== 0 ? openPostFilter[0] : null
           );
         }}
       >
-        <VscClose />
+        <VscChromeClose />
       </span>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📝{title}
+      &nbsp;&nbsp; &nbsp;&nbsp;📝{title}
     </PostWrapStyled>
   );
 }
 
-export default PostWrap;
-
 const PostWrapStyled = styled.div`
-  margin: 5px 0;
   cursor: pointer;
+  padding: 5px 0;
   position: relative;
-
   &:not(.selected):hover {
     background-color: ${({ theme }) => theme.color.hover};
   }
-
   &.selected {
     background-color: ${({ theme }) => theme.color.selected};
   }
-
   &:hover > span {
-    display: block;
+    display: ${({ isClose }) => (isClose ? "block" : "none")};
   }
-
   > span {
-    position: absolute;
-    top: 1px;
-    left: 5px;
     display: none;
+    top: 8px;
+    left: 3px;
+    position: absolute;
 
     &.visible {
       display: block;
     }
   }
+  &:hover {
+    background-color: ${({ theme }) => theme.color.hover};
+  }
+  background-color: ${({ selected, theme }) =>
+    selected ? `${theme.color.selected}` : ""};
 `;
